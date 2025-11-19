@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import yfinance as yf
 
 
 main_page = st.Page("main.py", title="Main Page")
@@ -14,5 +15,6 @@ pg = st.navigation(
     expanded=True,
 )
 
-# Run the selected page
-pg.run()
+@st.cache_resource(show_spinner=False, ttl="6h")
+def load_data(tickers, period):
+    pass
