@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import yfinance as yf
+from helper_funcs import load_data
+from config import tickers, default_period as period, horizon_map
 
 
 main_page = st.Page("main.py", title="Main Page")
@@ -15,6 +17,39 @@ pg = st.navigation(
     expanded=True,
 )
 
-@st.cache_resource(show_spinner=False, ttl="6h")
-def load_data(tickers, period):
-    pass
+# initialize session state
+
+if "tickers" not in st.session_state:
+    st.session_state.tickers = tickers
+
+if "period" not in st.session_state:
+    st.session_state.period = period
+
+# load data
+
+try: 
+    if "data" not in st.session_state:
+        st.session_state.data = load_data(st.session_state.tickers, horizon_map[st.session_state.period])
+    data = st.session_state.data
+except yf.exceptions.YFRateLimitError as e:
+    st.warning("YFinance is rate-limiting us :(\nTry again later.")
+    load_data.clear()  # Remove the bad cache entry.
+    st.session_state.pop("data", None)
+    st.stop()
+
+st.title("Stock Data Preview")
+
+# Make sure data exists
+if "data" in st.session_state:
+    data = st.session_state.data
+
+    # Show the full DataFrame
+    st.subheader("Full DataFrame")
+    st.dataframe(data)
+
+    # Optionally, show just the Close prices
+    if "Close" in data.columns.get_level_values(0):
+        st.subheader("Close Prices Only")
+        st.dataframe(data["Close"])
+else:
+    st.warning("No data loaded yet. Check your load_data function.")
