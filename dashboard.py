@@ -10,13 +10,16 @@ from config import tickers, default_period as period, horizon_map
 main_page = st.Page("main.py", title="Main Page")
 factor_page = st.Page("factor_page.py", title="Factor Analysis")
 risk_profit_page = st.Page("risk_profit.py", title="Risk & Profit")
+data_page = st.Page("data_page.py", title="Data Preview",)
 
 st.set_page_config(initial_sidebar_state="expanded", layout="wide")
 pg = st.navigation(
-    [main_page, factor_page, risk_profit_page],
+    [main_page, factor_page, risk_profit_page, data_page],
     position="top",
     expanded=True,
 )
+
+pg.run()
 
 PORTFOLIO_FILE = "portfolio.json"
 
@@ -49,22 +52,3 @@ except yf.exceptions.YFRateLimitError as e:
 
 if "portfolio_data" not in st.session_state:
     st.session_state.portfolio_data = load_data(st.session_state.portfolio_tickers, horizon_map[st.session_state.period])
-
-# data preview page
-
-st.title("Stock Data Preview")
-
-# Make sure data exists
-if "data" in st.session_state:
-    data = st.session_state.data
-
-    # Show the full DataFrame
-    st.subheader("Full DataFrame")
-    st.dataframe(data)
-
-    # Optionally, show just the Close prices
-    if "Close" in data.columns.get_level_values(0):
-        st.subheader("Close Prices Only")
-        st.dataframe(data["Close"])
-else:
-    st.warning("No data loaded yet. Check your load_data function.")
