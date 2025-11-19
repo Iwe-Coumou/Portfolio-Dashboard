@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import yfinance as yf
+import json
 from helper_funcs import load_data
 from config import tickers, default_period as period, horizon_map
 
@@ -17,6 +18,8 @@ pg = st.navigation(
     expanded=True,
 )
 
+PORTFOLIO_FILE = "portfolio.json"
+
 # initialize session state
 
 if "tickers" not in st.session_state:
@@ -24,6 +27,13 @@ if "tickers" not in st.session_state:
 
 if "period" not in st.session_state:
     st.session_state.period = period
+
+if "portfolio_tickers" not in st.session_state:
+    try:
+        with open(PORTFOLIO_FILE) as f:
+            st.session_state.portfolio_tickers = json.load(f).get("portfolio_tickers", [])
+    except FileNotFoundError:
+        st.session_state.portfolio_tickers = []
 
 # load data
 
@@ -36,6 +46,11 @@ except yf.exceptions.YFRateLimitError as e:
     load_data.clear()  # Remove the bad cache entry.
     st.session_state.pop("data", None)
     st.stop()
+
+if "portfolio_data" not in st.session_state:
+    st.session_state.portfolio_data = load_data(st.session_state.portfolio_tickers, horizon_map[st.session_state.period])
+
+# data preview page
 
 st.title("Stock Data Preview")
 
