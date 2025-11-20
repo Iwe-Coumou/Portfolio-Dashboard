@@ -1,4 +1,5 @@
 import streamlit as st
+import altair as alt
 from config import horizon_map, default_period
 
 st.set_page_config(
@@ -39,6 +40,21 @@ right_cell = cols[1].container(
     border=True, height="stretch", vertical_alignment="center"
 )
 
+close_data = st.session_state.data["Close"][st.session_state.portfolio_tickers]
+normalized_data = close_data.div(close_data.iloc[0])
+
 with right_cell:
     #create altair chart?
-    pass
+    st.altair_chart(
+        alt.Chart(
+            normalized_data.reset_index().melt(
+                id_vars=["Date"], var_name="Stock", value_name="Normalized Price")
+        )
+        .mark_line()
+        .encode(
+            alt.X("Date:T"),
+            alt.Y("Normalized Price:Q").scale(zero=False),
+            alt.Color("Stock:N"),
+        )
+        .properties(height=400)
+    )
