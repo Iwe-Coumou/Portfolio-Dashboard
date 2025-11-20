@@ -15,7 +15,7 @@ Easily analyze and visualize your stock portfolio's performance over different t
 
 tickers = st.multiselect(
     "Stock tickers",
-    options=sorted(set(st.session_state.portfolio.keys())),
+    options=sorted(set(st.session_state.tickers) | set(st.session_state.portfolio.keys())),
     default=st.session_state.portfolio.keys(),
     placeholder="Choose stocks to compare. Example: NVDA",
     accept_new_options=True)
