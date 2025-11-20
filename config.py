@@ -1,4 +1,4 @@
-tickers = ["AAPL", "MSFT", "GOOGL"]
+tickers = ["AAPL", "MSFT", "GOOGL", "KO"]
 default_period = "1 Year"
 horizon_map = {
     "1 Months": "1mo",
