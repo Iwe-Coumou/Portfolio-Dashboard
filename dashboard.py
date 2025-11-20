@@ -4,7 +4,7 @@ import numpy as np
 import yfinance as yf
 import json
 from helper_funcs import load_data
-from config import tickers, default_period as period, horizon_map
+from config import tickers, default_period, horizon_map, data_horizon
 
 
 main_page = st.Page("main.py", title="Main Page")
@@ -19,8 +19,6 @@ pg = st.navigation(
     expanded=True,
 )
 
-pg.run()
-
 PORTFOLIO_FILE = "portfolio.json"
 
 # initialize session state
@@ -29,20 +27,25 @@ if "tickers" not in st.session_state:
     st.session_state.tickers = tickers
 
 if "period" not in st.session_state:
-    st.session_state.period = period
+    st.session_state.period = data_horizon
 
-if "portfolio_tickers" not in st.session_state:
+if "selected_horizon" not in st.session_state:
+    st.session_state.selected_horizon = default_period
+
+if "portfolio" not in st.session_state:
     try:
         with open(PORTFOLIO_FILE) as f:
-            st.session_state.portfolio_tickers = json.load(f).get("portfolio_tickers", [])
+            portfolio_data = json.load(f).get("portfolio", [])
+            # store as a dict: {ticker: quantity}
+            st.session_state.portfolio = {item["ticker"]: item["quantity"] for item in portfolio_data}
     except FileNotFoundError:
-        st.session_state.portfolio_tickers = []
+        st.session_state.portfolio = {}
 
 # load data
 
 try: 
     if "data" not in st.session_state:
-        st.session_state.data = load_data(st.session_state.tickers, horizon_map[st.session_state.period])
+        st.session_state.data = load_data(list(st.session_state.portfolio.keys()), horizon_map[st.session_state.period])
     data = st.session_state.data
 except yf.exceptions.YFRateLimitError as e:
     st.warning("YFinance is rate-limiting us :(\nTry again later.")
@@ -51,4 +54,6 @@ except yf.exceptions.YFRateLimitError as e:
     st.stop()
 
 if "portfolio_data" not in st.session_state:
-    st.session_state.portfolio_data = load_data(st.session_state.portfolio_tickers, horizon_map[st.session_state.period])
+    st.session_state.portfolio_data = load_data(list(st.session_state.portfolio.keys()), horizon_map[st.session_state.period])
+
+pg.run()
