@@ -1,6 +1,17 @@
 import pandas as pd
 
-tickers = ["AAPL", "MSFT", "GOOGL", "KO","TSLA"]
+tickers = [
+    "AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "META", "NVDA", "JPM", "V", "MA",
+    "PG", "KO", "PEP", "DIS", "NFLX", "INTC", "CSCO", "ADBE", "CRM", "ORCL",
+    "IBM", "ACN", "TXN", "AVGO", "QCOM", "AMD", "SPGI", "AXP", "C", "WFC",
+    "BAC", "T", "VZ", "UPS", "UNP", "MMM", "HON", "GE", "CAT", "DE",
+    "LMT", "BA", "LOW", "HD", "NKE", "SBUX", "MDLZ", "MCD", "PFE", "MRK",
+    "ABBV", "BMY", "GILD", "AMGN", "MO", "PM", "COST", "CVX", "XOM", "COP",
+    "EOG", "SLB", "SCHW", "SPG", "PLD", "REGN", "NOW", "LIN", "TMO", "ISRG",
+    "HUM", "UNH", "JNJ", "BKNG", "BK", "WMT", "WM", "FDX", "CSX", "ADI", "ZTS",
+    "FIS", "FISV", "ADP", "ELV", "ICE", "CL", "CI", "DUK", "SO", "VLO", "PSA"
+]
+
 data_horizon = "20 Years"
 default_period = "1 Year"
 horizon_map = {

@@ -27,8 +27,9 @@ horizon = st.pills(
     default=default_period,
 )
 
-if st.session_state.selected_horizon != horizon:
+if horizon is not None:
     st.session_state.selected_horizon = horizon
+
 
 # Use the user-selected tickers for the chart
 if tickers:
@@ -76,7 +77,7 @@ with left_chart:
 
 if tickers:
     weights = pd.Series(st.session_state.portfolio)
-
+    weights = weights[weights.index.intersection(tickers)]
     # Multiply each column by its weight, then sum across columns
     combined_portfolio = (normalized_data[weights.index] * weights).sum(axis=1)
 
