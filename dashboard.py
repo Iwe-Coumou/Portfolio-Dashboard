@@ -4,7 +4,7 @@ import numpy as np
 import yfinance as yf
 import json
 from helper_funcs import load_data
-from config import tickers, default_period as period, horizon_map
+from config import tickers, default_period, horizon_map, data_horizon
 
 
 main_page = st.Page("main.py", title="Main Page")
@@ -27,7 +27,10 @@ if "tickers" not in st.session_state:
     st.session_state.tickers = tickers
 
 if "period" not in st.session_state:
-    st.session_state.period = period
+    st.session_state.period = data_horizon
+
+if "selected_horizon" not in st.session_state:
+    st.session_state.selected_horizon = default_period
 
 if "portfolio_tickers" not in st.session_state:
     try:
