@@ -15,8 +15,8 @@ Easily analyze and visualize your stock portfolio's performance over different t
 
 tickers = st.multiselect(
     "Stock tickers",
-    options=sorted(set(st.session_state.portfolio_tickers)),
-    default=st.session_state.portfolio_tickers,
+    options=sorted(set(st.session_state.portfolio.keys())),
+    default=st.session_state.portfolio.keys(),
     placeholder="Choose stocks to compare. Example: NVDA",
     accept_new_options=True)
 
@@ -75,11 +75,14 @@ with left_chart:
     )
 
 if tickers:
-    # normalized_data: original DataFrame with multiple tickers
-    combined_line = normalized_data.mean(axis=1)  # average across tickers
+    weights = pd.Series(st.session_state.portfolio)
 
-    # Make a single-column DataFrame
-    combined_df = combined_line.to_frame(name="Combined Stocks")
+    # Multiply each column by its weight, then sum across columns
+    combined_portfolio = (normalized_data[weights.index] * weights).sum(axis=1)
+
+    # Optional: normalize combined portfolio to start at 1
+    combined_portfolio /= combined_portfolio.iloc[0]
+    combined_portfolio.name = "Combined stocks"
 
 
 
@@ -88,7 +91,7 @@ right_chart = cols[1].container(border=True, height="stretch", vertical_alignmen
 with right_chart:
     st.altair_chart(
         alt.Chart(
-            combined_df.reset_index().melt(
+            combined_portfolio.reset_index().melt(
                 id_vars=["Date"], var_name="Stock", value_name="Normalized Price")
         )
         .mark_line()
