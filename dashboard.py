@@ -8,13 +8,13 @@ from config import tickers, default_period, horizon_map, data_horizon
 
 
 main_page = st.Page("main.py", title="Main Page")
-factor_page = st.Page("factor_page.py", title="Factor Analysis")
+stock_selection_page = st.Page("stock_selection_page.py", title="Stock Selection")
 risk_profit_page = st.Page("risk_profit.py", title="Risk & Profit")
 data_page = st.Page("data_page.py", title="Data Preview",)
 
 st.set_page_config(initial_sidebar_state="expanded", layout="wide")
 pg = st.navigation(
-    [main_page, factor_page, risk_profit_page, data_page],
+    [main_page, stock_selection_page, risk_profit_page, data_page],
     position="top",
     expanded=True,
 )
