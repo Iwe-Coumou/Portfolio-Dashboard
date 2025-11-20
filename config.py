@@ -9,7 +9,7 @@ tickers = [
     "ABBV", "BMY", "GILD", "AMGN", "MO", "PM", "COST", "CVX", "XOM", "COP",
     "EOG", "SLB", "SCHW", "SPG", "PLD", "REGN", "NOW", "LIN", "TMO", "ISRG",
     "HUM", "UNH", "JNJ", "BKNG", "BK", "WMT", "WM", "FDX", "CSX", "ADI", "ZTS",
-    "FIS", "FISV", "ADP", "ELV", "ICE", "CL", "CI", "DUK", "SO", "VLO", "PSA"
+    "FIS", "FISV", "ADP", "ELV", "ICE", "CL", "CI", "DUK", "SO", "VLO", "PSA", "KO"
 ]
 
 data_horizon = "20 Years"

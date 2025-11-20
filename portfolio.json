@@ -1,9 +1,5 @@
 {
   "portfolio": [
-    {"ticker": "KO", "quantity": 2, "buy_price": 60.00},
-    {"ticker": "GOOGL", "quantity": 1, "buy_price": 1500.00},
-    {"ticker": "AAPL", "quantity": 1, "buy_price": 120.00},
-    {"ticker": "IBM", "quantity": 3, "buy_price": 130.00},
-    {"ticker": "NVDA", "quantity": 4, "buy_price": 200.00}
+    {"ticker": "KO", "quantity": 2, "buy_price": 71.34, "date": "11-11-2025"}
   ]
 }

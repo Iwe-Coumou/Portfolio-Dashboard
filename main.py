@@ -71,7 +71,7 @@ with left_chart:
                     direction="horizontal")),
         )
         .properties(
-            title="Normalized Stock Prices",
+            title="Historical Stock Performance (normalized)",
             height=400),
     )
 
@@ -107,7 +107,7 @@ with right_chart:
                     direction="horizontal")),
         )
         .properties(
-            title="Combined Portfolio Chart",
+            title="Historical Portfolio Performance (normalized)",
             height=400),
     )   
 
