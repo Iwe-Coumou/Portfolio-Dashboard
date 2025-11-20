@@ -19,8 +19,6 @@ pg = st.navigation(
     expanded=True,
 )
 
-pg.run()
-
 PORTFOLIO_FILE = "portfolio.json"
 
 # initialize session state
@@ -52,3 +50,5 @@ except yf.exceptions.YFRateLimitError as e:
 
 if "portfolio_data" not in st.session_state:
     st.session_state.portfolio_data = load_data(st.session_state.portfolio_tickers, horizon_map[st.session_state.period])
+
+pg.run()
