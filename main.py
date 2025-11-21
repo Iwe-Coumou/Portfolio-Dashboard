@@ -2,6 +2,7 @@ import streamlit as st
 import altair as alt
 import pandas as pd
 from config import horizon_map, default_period, horizon_offsets
+from helper_funcs import combine_stocks
 
 st.set_page_config(
     page_title="Hello",
@@ -31,19 +32,17 @@ if horizon is not None:
     st.session_state.selected_horizon = horizon
 
 
-# Use the user-selected tickers for the chart
 if tickers:
     end_date = st.session_state.data.index[-1]
     start_date = end_date - horizon_offsets[st.session_state.selected_horizon]
     close_data = st.session_state.data.loc[start_date:end_date]["Close"][tickers]
-    subset_data = close_data.copy()
 
-    for ticker in subset_data.columns:
-        first_valid = subset_data[ticker].first_valid_index()
-        subset_data.loc[:first_valid, ticker] = subset_data.loc[first_valid, ticker]
+    for ticker in close_data.columns:
+        first_valid = close_data[ticker].first_valid_index()
+        close_data.loc[:first_valid, ticker] = close_data.loc[first_valid, ticker]
 
     # Now normalize safely
-    normalized_data = subset_data.div(subset_data.iloc[0])
+    normalized_data = close_data.div(close_data.iloc[0])
 else:
     st.info("Pick some stocks to compare")
     st.stop()
@@ -76,16 +75,9 @@ with left_chart:
     )
 
 if tickers:
-    weights = pd.Series(st.session_state.portfolio)
-    weights = weights[weights.index.intersection(tickers)]
-    # Multiply each column by its weight, then sum across columns
-    combined_portfolio = (normalized_data[weights.index] * weights).sum(axis=1)
-
-    # Optional: normalize combined portfolio to start at 1
+    combined_portfolio = normalized_data.mean(axis=1)
     combined_portfolio /= combined_portfolio.iloc[0]
     combined_portfolio.name = "Combined stocks"
-
-
 
 right_chart = cols[1].container(border=True, height="stretch", vertical_alignment="center")
 
@@ -110,4 +102,3 @@ with right_chart:
             title="Historical Portfolio Performance (normalized)",
             height=400),
     )   
-
