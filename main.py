@@ -2,7 +2,6 @@ import streamlit as st
 import altair as alt
 import pandas as pd
 from config import horizon_map, default_period, horizon_offsets
-from helper_funcs import combine_stocks
 
 st.set_page_config(
     page_title="Hello",
