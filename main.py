@@ -1,7 +1,8 @@
 import streamlit as st
 import altair as alt
 import pandas as pd
-from config import horizon_map, default_period, horizon_offsets
+from config import horizon_map, default_period, horizon_offsets, returns_requirements
+from helper_funcs import returns, get_return_horizons, returns_boxplot, price_chart
 
 st.set_page_config(
     page_title="Hello",
@@ -20,16 +21,19 @@ tickers = st.multiselect(
     placeholder="Choose stocks to compare. Example: NVDA",
     accept_new_options=True)
 
-# Buttons for picking time horizon
-horizon = st.pills(
-    "Time horizon",
-    options=list(horizon_map.keys()),
-    default=default_period,
-)
+cols = st.columns([2,1])
+left_pills = cols[0].container()
+
+with left_pills:
+    # Buttons for picking time horizon
+    horizon = st.pills(
+        "Time horizon",
+        options=list(horizon_map.keys()),
+        default=default_period,
+    )
 
 if horizon is not None:
     st.session_state.selected_horizon = horizon
-
 
 if tickers:
     end_date = st.session_state.data.index[-1]
@@ -46,32 +50,22 @@ else:
     st.info("Pick some stocks to compare")
     st.stop()
 
+return_horizon_options = get_return_horizons(end_date - start_date, returns_requirements)
 
+right_pills = cols[1].container()
 
-cols = st.columns(2)
+with right_pills:
+    returns_horizon = st.pills(
+        "Returns horizon",
+        options=return_horizon_options,
+        default="Daily",
+    )
+
+cols = st.columns([2,1])
 left_chart = cols[0].container(border=True, height="stretch", vertical_alignment="center")
 
 with left_chart:
-    st.altair_chart(
-        alt.Chart(
-            normalized_data.reset_index().melt(
-                id_vars=["Date"], var_name="Stock", value_name="Normalized Price")
-        )
-        .mark_line()
-        .encode(
-            alt.X("Date:T"),
-            alt.Y("Normalized Price:Q").scale(zero=False),
-            alt.Color(
-                "Stock:N",
-                legend=alt.Legend(
-                    orient="top", 
-                    title=None, 
-                    direction="horizontal")),
-        )
-        .properties(
-            title="Historical Stock Performance (normalized)",
-            height=400),
-    )
+    st.altair_chart(price_chart(normalized_data))
 
 if tickers:
     combined_portfolio = normalized_data.mean(axis=1)
@@ -81,23 +75,18 @@ if tickers:
 right_chart = cols[1].container(border=True, height="stretch", vertical_alignment="center")
 
 with right_chart:
-    st.altair_chart(
-        alt.Chart(
-            combined_portfolio.reset_index().melt(
-                id_vars=["Date"], var_name="Stock", value_name="Normalized Price")
-        )
-        .mark_line()
-        .encode(
-            alt.X("Date:T"),
-            alt.Y("Normalized Price:Q").scale(zero=False),
-            alt.Color(
-                "Stock:N",
-                legend=alt.Legend(
-                    orient="top", 
-                    title=None, 
-                    direction="horizontal")),
-        )
-        .properties(
-            title="Historical Portfolio Performance (normalized)",
-            height=400),
-    )   
+    stock_returns = returns(close_data, horizon=returns_horizon.lower())
+
+    st.altair_chart(returns_boxplot(stock_returns, returns_horizon))
+
+cols = st.columns([2,1])
+left_chart = cols[0].container(border=True, height="stretch", vertical_alignment="center")
+
+with left_chart:
+    st.altair_chart(price_chart(combined_portfolio))
+
+right_chart = cols[1].container(border=True, height="stretch", vertical_alignment="center")
+
+with right_chart:
+    portfolio_returns = returns(combined_portfolio.to_frame(name="Combined Portfolio"), horizon=returns_horizon.lower())
+    st.altair_chart(returns_boxplot(portfolio_returns, returns_horizon, x_label=False))

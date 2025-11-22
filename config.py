@@ -32,3 +32,9 @@ horizon_offsets = {
     "10 Years": pd.DateOffset(years=10),
     "20 Years": pd.DateOffset(years=20),
 }
+returns_requirements = {
+    "Daily": pd.Timedelta(days=1),
+    "Weekly": pd.Timedelta(weeks=1),
+    "Monthly": pd.Timedelta(days=31),
+    "Yearly": pd.Timedelta(days=365)
+}
