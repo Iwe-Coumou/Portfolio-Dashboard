@@ -53,7 +53,6 @@ else:
 return_horizon_options = get_return_horizons(end_date - start_date, returns_requirements)
 
 right_pills = cols[1].container()
-
 with right_pills:
     returns_horizon = st.pills(
         "Returns horizon",
@@ -73,20 +72,17 @@ if tickers:
     combined_portfolio.name = "Combined stocks"
 
 right_chart = cols[1].container(border=True, height="stretch", vertical_alignment="center")
-
 with right_chart:
     stock_returns = returns(close_data, horizon=returns_horizon.lower())
-
     st.altair_chart(returns_boxplot(stock_returns, returns_horizon))
 
 cols = st.columns([2,1])
-left_chart = cols[0].container(border=True, height="stretch", vertical_alignment="center")
 
+left_chart = cols[0].container(border=True, height="stretch", vertical_alignment="center")
 with left_chart:
     st.altair_chart(price_chart(combined_portfolio))
 
 right_chart = cols[1].container(border=True, height="stretch", vertical_alignment="center")
-
 with right_chart:
     portfolio_returns = returns(combined_portfolio.to_frame(name="Combined Portfolio"), horizon=returns_horizon.lower())
     st.altair_chart(returns_boxplot(portfolio_returns, returns_horizon, x_label=False))

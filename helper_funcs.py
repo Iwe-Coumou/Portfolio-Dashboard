@@ -87,7 +87,7 @@ def returns_boxplot(data, returns_horizon, x_label=True):
             alt.Color("Stock:N"),
             
         ).properties(
-            title="Return Distribution by Stock",
+            title="Return Distribution",
             height=400
         )
 
