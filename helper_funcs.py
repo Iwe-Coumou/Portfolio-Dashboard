@@ -8,11 +8,11 @@ import altair as alt
 def load_data(tickers, period):
     tickers_obj = yf.Tickers(" ".join(tickers))
     data = tickers_obj.history(period=period)
-
+    info = {ticker: tickers_obj.tickers[ticker].info for ticker in tickers}
     if data is None or data.empty:
         raise RuntimeError("YFinance returned no data.")
 
-    return data
+    return data, info
 
 
 def returns(data, horizon='daily', log=False):

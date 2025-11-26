@@ -45,12 +45,14 @@ if "portfolio" not in st.session_state:
 
 try: 
     if "data" not in st.session_state:
-        st.session_state.data = load_data(list(st.session_state.tickers), horizon_map[st.session_state.period])
+        st.session_state.data, st.session_state.tickers_info = load_data(list(st.session_state.tickers), horizon_map[st.session_state.period])
     data = st.session_state.data
+    tickers_info = st.session_state.tickers_info
 except yf.exceptions.YFRateLimitError as e:
     st.warning("YFinance is rate-limiting us :(\nTry again later.")
     load_data.clear()  # Remove the bad cache entry.
     st.session_state.pop("data", None)
+    st.session_state.pop("tickers_info", None)
     st.stop()
 
 if "portfolio_data" not in st.session_state:
